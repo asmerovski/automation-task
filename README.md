@@ -1,5 +1,3 @@
-### mistral-task
-
 ## Test Automation Project
 
 # User story #1
