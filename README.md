@@ -44,5 +44,6 @@ Create an automation test project that automates test steps from the â€œTask 1â€
 * Mocha
 
 Note: In case your preferred tool is not in the list, feel free to use it.
+
 Link to the web application:
 http://qualitypointtech.net/timesheetdemo
