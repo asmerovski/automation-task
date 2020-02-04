@@ -1,9 +1,12 @@
-import unittest
 # import HtmlTestRunner
-# import time
+import unittest
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 from datetime import date
 
 
@@ -22,7 +25,7 @@ class OnlineTimesheet(unittest.TestCase):
         self.driver.implicitly_wait(3)
 
     # Load home page
-    def test_home_page_login(self):
+    def test_Challenge(self):
         """Checking if title is ok, elements are present and login is successful."""
         driver = self.driver
         driver.get(self.homepage_url)
@@ -37,72 +40,55 @@ class OnlineTimesheet(unittest.TestCase):
 
         """Entering and checking data"""
         # Add 6 hours to the Microsoft project for today
-
         # Find today's date first in format 2020-02-03
         today = date.today().strftime('%Y-%m-%d')
 
-        # Determining xpath of input field where Microsoft label stands in doc.
-        # input_xpath = str('//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@id="projectsum"]'.format(today))
-        input_field = self.driver.find_element_by_xpath(
-            '//label[text()="Microsoft"]/../../td/input[@value="2020-02-03"]/../input[@id="projectsum"]')
+        # Determining xpath of input field where Microsoft label stands in document.
+        input_xpath = '//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@id="projectsum"]'.format(today)
+        input_field = self.driver.find_element_by_xpath(str(input_xpath))
 
         # Entering 6 hrs
         input_field.clear()
+        time.sleep(10)
         input_field.send_keys("6")
 
+        # Adding comment
+        # Click comment icon
+        self.driver.find_element_by_xpath(
+            '//label[text()="Microsoft"]/../../td/input[@value="' + today + '"]/../a').click()
 
-#    def test_enter_data(self):
-#        """Entering and checking data"""
-#        # Add 6 hours to the Microsoft project for today
-#
-#        # Find today's date first in format 2020-02-03
-#        today = date.today().strftime('%Y-%m-%d')
-#
-#        # Determining xpath of input field where Microsoft label stands in doc.
-#        # input_xpath = str('//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@id="projectsum"]'.format(today))
-#        input_field = self.driver.find_element_by_xpath('//label[text()="Microsoft"]/../../td/input[@value="2020-02-03"]/../input[@id="projectsum"]')
-#
-#        # Entering 6 hrs
-#        input_field.clear()
-#        input_field.send_keys("6")
-#
-#        # Adding text to comment window
+        driver.implicitly_wait(2)
 
+        # Enter comment
+        comment_box = self.driver.find_element_by_xpath(
+            '//label[text()="Microsoft"]/../../td/input[@value="' + today + '"]/../div/form/p/textarea')
+        comment_box.clear()
+        comment_box.send_keys('Automation Test Comment')
+        self.driver.find_element_by_id('comments_submit').click()
+        # Wait for text updated and then click X button
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.visibility_of_element_located((By.ID, "checkfield")))
+        self.driver.find_element_by_class_name('close')
+        driver.implicitly_wait(2)
 
-#        self.assertIn(self.search_term, self.driver.title)
-#        # to verify if the search results page contains any results or no results were found.
-#        self.assertNotIn("No results found.", self.driver.page_source)
+        # Submit Time status
+        self.driver.find_element_by_name('submit_time').click()
 
-#   def test_add_item_to_cart(self):
-#       # to load a given URL in browser window
-#       self.driver.get(self.homepage_url)
-#       # to enter search term, we need to locate the search textbox
-#       searchTextBox = self.driver.find_element_by_id("twotabsearchtextbox")
-#       # to clear any text in the search textbox
-#       searchTextBox.clear()
-#       # to enter the search term in the search textbox via send_keys() function
-#       searchTextBox.send_keys(self.search_term)
-#       # to search for the entered search term
-#       searchTextBox.send_keys(Keys.RETURN)
-#       # to click on the first search result's link
-#       self.driver.find_element_by_xpath(
-#           "(//div[@class='sg-col-inner']//img[contains(@data-image-latency,'s-product-image')])[2]").click()
-#       # since the clicked product opens in a new tab, we need to switch to that tab.
-#       # to do so we will use window_handles()
-#       self.driver.switch_to.window(self.driver.window_handles[1])
-#       # to add the product to cart by clicking the add to cart button
-#       self.driver.find_element_by_id("add-to-cart-button").click()
-#       # to verify that sub cart page has loaded
-#       self.assertTrue(self.driver.find_element_by_id("hlb-subcart").is_enabled())
-#       # to verify that the product was added to the cart successfully
-#       self.assertTrue(self.driver.find_element_by_id("hlb-ptc-btn-native").is_displayed())
-#
+        # Open Weekly Status Entry
+        self.driver.find_element_by_link_text('Weekly Status Entry').click()
 
-#   def tearDown(self):
-#       """Cleaning up"""
-#       self.driver.quit()
+        # Assert value is 6
+        populated_box_xpath = '//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@type="text"]'.format(
+            today)
+        populated_box_value = self.driver.find_element_by_xpath(populated_box_xpath).get_attribute('value')
+        self.assertEqual(populated_box_value, '6')
+
+    def tearDown(self):
+        """Cleaning up"""
+        self.driver.quit()
 
 
 if __name__ == '__main__':
     print('hello!!!!!')
-    # unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner(output='C:/'))
+    unittest.main()
+    # unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner())
