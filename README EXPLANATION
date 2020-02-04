@@ -1,10 +1,11 @@
 Quick and dirty but works!
 Everything is done in python and unittest.
-Script should be run this way:
+Script should be run this way (you must be in the same folder as script):
+python test.py
 
 Need python version 3.8.
 Installed modules:
-* Selenium (pip install selenium)
+* selenium
+* pyunitreport
 
-From CLI, run with command:
-python -m unittest test.py
+HTML report will be generated in same folder.

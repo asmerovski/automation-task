@@ -1,15 +1,16 @@
 # TODO figure out why HtmlTestRunner doesn't want to be imported, or use another way of HTML reporting
-# TODO detect that element is read only and throw a message that admin needs to unlock table
 # TODO throw everything into separate test cases
 # TODO if time permits, implement POM
-import HtmlTestRunner
+import os
+from pyunitreport import HTMLTestRunner
 import unittest
-import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from datetime import date
+
+current_directory = os.getcwd()
 
 
 class OnlineTimesheet(unittest.TestCase):
@@ -28,8 +29,8 @@ class OnlineTimesheet(unittest.TestCase):
         self.driver.implicitly_wait(3)
 
     # Load home page
-    def test_Challenge(self):
-        """Checking if title is ok, elements are present and login is successful."""
+    def test_Automation(self):
+        """All tests"""
         driver = self.driver
         driver.get(self.homepage_url)
         # Check if title is OK, and login controls present
@@ -42,22 +43,24 @@ class OnlineTimesheet(unittest.TestCase):
         driver.find_element_by_name('login').click()
 
         """Entering and checking data"""
-        # Add 6 hours to the Microsoft project for today
+        # Add 6 hours to the project for today
         # Find today's date first in format 2020-02-03
         today = date.today().strftime('%Y-%m-%d')
 
         # Determining xpath of input field where label stands in document.
-        input_xpath = '(// input[@ value="{}"])[1] /../ input[ @ id = "projectsum"]'.format(today)
+        input_xpath = '(//input[@value="{}"])[1]/../input[@id="projectsum"]'.format(today)
         input_field = self.driver.find_element_by_xpath(str(input_xpath))
 
         # Entering 6 hrs
+        self.assertFalse(input_field.get_attribute("readonly"), 'Input field is READ-ONLY. Login as admin and unlock sheet')  # Fail if element is read only
         input_field.clear()
         driver.implicitly_wait(2)
         input_field.send_keys("6")
 
         # Adding comment
         # Click comment icon
-        self.driver.find_element_by_xpath('(//input[@value="{}"])[1]/../input[@id="projectsum"]/../a'.format(today)).click()
+        self.driver.find_element_by_xpath(
+            '(//input[@value="{}"])[1]/../input[@id="projectsum"]/../a'.format(today)).click()
         self.driver.implicitly_wait(2)
 
         # Enter comment
@@ -92,4 +95,4 @@ class OnlineTimesheet(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner())
+    unittest.main(testRunner=HTMLTestRunner(output=current_directory))
