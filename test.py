@@ -3,15 +3,13 @@
 # TODO detect that element is read only and throw a message that admin needs to unlock table
 # TODO throw everything into separate test cases
 # TODO if time permits, implement POM
-# import HtmlTestRunner
+import HtmlTestRunner
 import unittest
 import time
 from selenium import webdriver
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-
 from datetime import date
 
 
@@ -96,5 +94,5 @@ class OnlineTimesheet(unittest.TestCase):
 
 if __name__ == '__main__':
     print('hello!!!!!')
-    unittest.main()
-    # unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner())
+    testRunner = HtmlTestRunner.HTMLTestRunner(output='C:\\Reports')
+    unittest.main(testRunner)

@@ -5,3 +5,6 @@ Script should be run this way:
 Need python version 3.8.
 Installed modules:
 * Selenium (pip install selenium)
+
+From CLI, run with command:
+python -m unittest test.py
