@@ -93,6 +93,4 @@ class OnlineTimesheet(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    print('hello!!!!!')
-    testRunner = HtmlTestRunner.HTMLTestRunner(output='C:\\Reports')
-    unittest.main(testRunner)
+    unittest.main(testRunner=HtmlTestRunner.HTMLTestRunner())
