@@ -17,10 +17,11 @@ from datetime import date
 
 class OnlineTimesheet(unittest.TestCase):
     # declare variable to store the URL to be visited
+    homepage_url = "http://qualitypointtech.net/timesheetdemo/"
+    # parse user data from logindata.txt
     with open('logindata.txt', 'r') as file:
         for details in file:
             username, password = details.split(':')
-    homepage_url = "http://qualitypointtech.net/timesheetdemo/"
 
     # Set up test case
     def setUp(self):
