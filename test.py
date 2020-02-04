@@ -1,5 +1,4 @@
 # TODO figure out why HtmlTestRunner doesn't want to be imported, or use another way of HTML reporting
-# TODO figure out why windows are duplicated when
 # TODO detect that element is read only and throw a message that admin needs to unlock table
 # TODO throw everything into separate test cases
 # TODO if time permits, implement POM
@@ -47,30 +46,27 @@ class OnlineTimesheet(unittest.TestCase):
         # Find today's date first in format 2020-02-03
         today = date.today().strftime('%Y-%m-%d')
 
-        # Determining xpath of input field where Microsoft label stands in document.
-        input_xpath = '//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@id="projectsum"]'.format(today)
+        # Determining xpath of input field where label stands in document.
+        input_xpath = '(// input[@ value="{}"])[1] /../ input[ @ id = "projectsum"]'.format(today)
         input_field = self.driver.find_element_by_xpath(str(input_xpath))
 
         # Entering 6 hrs
         input_field.clear()
-        time.sleep(10)
+        driver.implicitly_wait(2)
         input_field.send_keys("6")
 
         # Adding comment
         # Click comment icon
-        self.driver.find_element_by_xpath(
-            '//label[text()="Microsoft"]/../../td/input[@value="' + today + '"]/../a').click()
-
-        driver.implicitly_wait(2)
+        self.driver.find_element_by_xpath('(//input[@value="{}"])[1]/../input[@id="projectsum"]/../a'.format(today)).click()
+        self.driver.implicitly_wait(2)
 
         # Enter comment
-        comment_box = self.driver.find_element_by_xpath(
-            '//label[text()="Microsoft"]/../../td/input[@value="' + today + '"]/../div/form/p/textarea')
+        comment_box = self.driver.find_element_by_id("prjcomments")
         comment_box.clear()
         comment_box.send_keys('Automation Test Comment')
         self.driver.find_element_by_id('comments_submit').click()
         # Wait for text updated and then click X button
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 5)
         wait.until(ec.visibility_of_element_located((By.ID, "checkfield")))
         self.driver.find_element_by_class_name('close')
         driver.implicitly_wait(2)
@@ -82,10 +78,13 @@ class OnlineTimesheet(unittest.TestCase):
         self.driver.find_element_by_link_text('Weekly Status Entry').click()
 
         # Assert value is 6
-        populated_box_xpath = '//label[text()="Microsoft"]/../../td/input[@value="{}"]/../input[@type="text"]'.format(
-            today)
-        populated_box_value = self.driver.find_element_by_xpath(populated_box_xpath).get_attribute('value')
+        populated_box_value = self.driver.find_element_by_xpath(input_xpath).get_attribute('value')
         self.assertEqual(populated_box_value, '6')
+
+        # Assert comment
+        # TODO: Find text entered in comment. I have no idea how to rip it. Value not present.
+        # populated_comment = self.driver.find_element_by_id(comment_box).get_attribute('text')
+        # self.assertEqual(populated_comment, 'Automation Test Comment')
 
     def tearDown(self):
         """Cleaning up"""
