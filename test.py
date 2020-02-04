@@ -1,11 +1,16 @@
+# TODO figure out why HtmlTestRunner doesn't want to be imported, or use another way of HTML reporting
+# TODO figure out why windows are duplicated when
+# TODO detect that element is read only and throw a message that admin needs to unlock table
+# TODO throw everything into separate test cases
+# TODO if time permits, implement POM
 # import HtmlTestRunner
 import unittest
 import time
 from selenium import webdriver
+
 from selenium.webdriver.common.by import By
-# from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 
 from datetime import date
 
@@ -67,7 +72,7 @@ class OnlineTimesheet(unittest.TestCase):
         self.driver.find_element_by_id('comments_submit').click()
         # Wait for text updated and then click X button
         wait = WebDriverWait(driver, 10)
-        wait.until(EC.visibility_of_element_located((By.ID, "checkfield")))
+        wait.until(ec.visibility_of_element_located((By.ID, "checkfield")))
         self.driver.find_element_by_class_name('close')
         driver.implicitly_wait(2)
 
